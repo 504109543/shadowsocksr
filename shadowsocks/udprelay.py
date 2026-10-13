@@ -213,6 +213,8 @@ class UDPRelay(object):
         server_socket = socket.socket(af, socktype, proto)
         server_socket.bind((self._listen_addr, self._listen_port))
         server_socket.setblocking(False)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1024 * 32)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1024 * 32)
         self._server_socket = server_socket
         self._stat_callback = stat_callback
 
@@ -466,6 +468,7 @@ class UDPRelay(object):
             logging.error("exception from user %d" % (user_id,))
 
         try:
+            #logging.info('UDP handle_server sendto %s:%d %d bytes' % (common.to_str(server_addr), server_port, len(data)))
             client.sendto(data, (server_addr, server_port))
             self.add_transfer_u(client_uid, len(data))
             if client_pair is None: # new request

@@ -324,6 +324,7 @@ class TCPRelayHandler(object):
         # and update the stream to wait for writing
         if not sock:
             return False
+        #logging.debug("_write_to_sock %s %s %s" % (self._remote_sock, sock, self._remote_udp))
         uncomplete = False
         if self._remote_udp and sock == self._remote_sock:
             try:
@@ -909,6 +910,7 @@ class TCPRelayHandler(object):
                 return
             if not data:
                 return
+        self._server.server_transfer_ul += len(data)
         if self._stage == STAGE_STREAM:
             if self._is_local:
                 if self._encryptor is not None:
